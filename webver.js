@@ -168,6 +168,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return 0;
 })
 
+let clearScoresBtn = document.querySelector('#clear-score-btn');
+clearScoresBtn.addEventListener('click', () => {
+    let playerScoreTexts = document.querySelectorAll('.player-score');
+    for (let i = 0; i < playerScoreTexts.length; i++) {
+        playerScoreTexts[i].textContent = 0;
+    }
+})
+
 let frame = document.querySelector('#frame');
 
 let playAgainBtn = document.querySelector('.play-again-btn');
@@ -194,13 +202,17 @@ for (let i = 0; i < 3; i++) {
             if (game.startRound(j, i) == 0)
                 {
                     let currentPlayer = null;
+                    let playerScoreText = null;
+
                     if (game.logic.turn % 2 == 1) {
                         square.innerHTML = "X";
                         currentPlayer = "Player 1"
+                        playerScoreText = document.querySelector('#player1-score')
                     } 
                     else {
                         square.innerHTML = "O";
                         currentPlayer = "Player 2";
+                        playerScoreText = document.querySelector('#player2-score')
                     }
                     game.logic.turn++;
                     if (game.logic.checkBoard() == 0) {
@@ -214,6 +226,11 @@ for (let i = 0; i < 3; i++) {
                         let headerText = document.querySelector('.outcome-header-text');
                         headerText.textContent = `${game.logic.winner} Wins!`;
                         
+                        let playerScore = parseInt(playerScoreText.textContent);
+                        playerScore++;
+                        playerScoreText.textContent = `${playerScore}`;
+                        console.log(playerScore);
+                        console.log(playerScoreText.textContent);
                         modalHeader.appendChild(headerText);
                     }
                 }
