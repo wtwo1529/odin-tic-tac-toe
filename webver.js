@@ -17,9 +17,10 @@ const gameFunction = (function(){
         }
     }
 
-    let player = (function(symbol, board){``
+    let player = (function(name, symbol, board){``
         // const symbol = prompt("X or O");
-        return function selectBoardPosition(x, y) {
+        let playerName = name;
+        function selectBoardPosition(x, y) {
             if (board[y][x] == null) {
                 board[y][x] = symbol;
                 return 0;
@@ -27,55 +28,15 @@ const gameFunction = (function(){
             console.log("Invalid Position.")
             return 1;
         };
+        return {playerName, selectBoardPosition};
     })
     let logic = (function(){
         const gameBoard = gameboard.board;
         console.log(gameBoard)
-        const player1 = player("X", gameBoard);
-        const player2 = player("O", gameBoard);
+        const player1 = player("Player 1", "X", gameBoard);
+        const player2 = player("Player 2", "O", gameBoard);
         let turn = 1;
         let winner = null;
-        const printBoard = displayController(gameBoard)
-        
-        let start = (function()
-            {
-            outer: while (winner == null || round < 8) {
-                turn = 1;
-                inner1: while (0==0)
-                    {
-                        if (player1() == 0)
-                            {
-                                printBoard();
-                                console.log(`checkBoard: ${checkBoard(gameBoard)}`)
-                                 if (checkBoard(gameBoard) == 1) {
-                                    break outer;
-                                 };
-                                round++;
-                                break inner1;
-                            }
-                    }
-                turn = 2;
-                inner2: while (0==0)
-                    {
-                        if (player2() == 0) {
-                            printBoard();
-                            console.log(`checkBoard: ${checkBoard(gameBoard)}`)
-                            if (checkBoard(gameBoard) == 1) {
-                                break outer;
-                            };                        
-                            round++;
-                            break inner2;
-                        }
-                    }
-                }
-                if (round == 8 && winner == null) {
-                    console.log("You Tie!");
-                }
-                else {
-                    console.log(`${winner} Wins!`);
-                }
-            }
-        );
 
         let boardCheck = function() {
             board = gameBoard;
@@ -120,21 +81,21 @@ const gameFunction = (function(){
                             }
                     }
                     if (horizontalX == 3) {
-                        winner = "Player1";
+                        winner = player1.playerName;
                         return 0;
                         }
                     else if (horizontalO == 3) {
-                        winner = "Player2";
+                        winner = player2.playerName;
                         return 0;
                         }
         
             
                 if (verticalX.includes(3) || leftDiagonalX == 3 || rightDiagonalX == 3) {
-                    winner = "Player1";
+                    winner = player1.playerName;
                     return 0;
                     }
                 else if (verticalO.includes(3) || leftDiagonalO == 3 || rightDiagonalO == 3) {
-                    winner = "Player2";
+                    winner = player2.playerName;
                     return 0;
                     }
                 }
@@ -142,18 +103,18 @@ const gameFunction = (function(){
             }
         }
         let checkBoard = boardCheck();
-        return {player1, player2, turn, winner, start, checkBoard} 
+        return {player1, player2, turn, winner, checkBoard} 
         })();
         
         let startRound = (function(x, y) {
             if (logic.turn % 2 == 1) {
-                if (logic.player1(x, y) == 0) {
+                if (logic.player1.selectBoardPosition(x, y) == 0) {
                     return 0;
                 }
                 return 1;
             }
             else {
-                if (logic.player2(x, y) == 0) {                
+                if (logic.player2.selectBoardPosition(x, y) == 0) {                
                     return 0;
                 }
                 return 1;
@@ -168,21 +129,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return 0;
 })
 
-let PLAYER1_NAME = 'Player 1';
-let PLAYER2_NAME = 'Player 2';
-
 let PLAYER1_NAME_H1 = document.querySelector('#player1-name');
 let PLAYER2_NAME_H1 = document.querySelector('#player2-name');
 
 PLAYER1_NAME_H1.addEventListener('blur', () => {
-    PLAYER1_NAME = PLAYER1_NAME_H1.textContent;
-    console.log(PLAYER1_NAME);
-});
+    game.logic.player1.playerName = PLAYER1_NAME_H1.textContent;
+    });
 
 PLAYER2_NAME_H1.addEventListener('blur', () => {
-    PLAYER2_NAME = PLAYER1_NAME_H2.textContent;
-    console.log(PLAYER2_NAME);
+    game.logic.player2.playerName = PLAYER2_NAME_H1.textContent;
 });
+
+PLAYER1_NAME_H1.addEventListener('keydown', (event) => {
+    if (event.key == 'Enter') {
+        event.preventDefault();
+        document.querySelector('#player1-name').blur();
+    }
+    });
+
+PLAYER2_NAME_H1.addEventListener('keydown', (event) => {
+    if (event.key == 'Enter') {
+        event.preventDefault();
+        document.querySelector('#player2-name').blur()
+    }
+});
+
 
 let clearScoresBtn = document.querySelector('#clear-score-btn');
 clearScoresBtn.addEventListener('click', () => {
@@ -204,6 +175,10 @@ playAgainBtn.addEventListener('click', () => {
     outcomeModal.classList.remove('active');
 
     game = gameFunction();
+
+    game.logic.player1.playerName = PLAYER1_NAME_H1.textContent;
+    game.logic.player2.playerName = PLAYER2_NAME_H1.textContent;
+
 })
 
 for (let i = 0; i < 3; i++) {
@@ -222,12 +197,12 @@ for (let i = 0; i < 3; i++) {
 
                     if (game.logic.turn % 2 == 1) {
                         square.innerHTML = "X";
-                        currentPlayer = "Player 1"
+                        currentPlayer = game.logic.player1.playerName;
                         playerScoreText = document.querySelector('#player1-score')
                     } 
                     else {
                         square.innerHTML = "O";
-                        currentPlayer = "Player 2";
+                        currentPlayer = game.logic.player2.playerName;
                         playerScoreText = document.querySelector('#player2-score')
                     }
                     game.logic.turn++;
