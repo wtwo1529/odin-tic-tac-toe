@@ -17,6 +17,9 @@ button:active {
     opacity: 0.65;
 }   
 
+[contenteditable] {
+    outline: 0px solid transparent;
+}
 body, html {
     width: 100%;
     height: 100%;

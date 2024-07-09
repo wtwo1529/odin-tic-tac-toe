@@ -168,6 +168,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return 0;
 })
 
+let PLAYER1_NAME = 'Player 1';
+let PLAYER2_NAME = 'Player 2';
+
+let PLAYER1_NAME_H1 = document.querySelector('#player1-name');
+let PLAYER2_NAME_H1 = document.querySelector('#player2-name');
+
+PLAYER1_NAME_H1.addEventListener('blur', () => {
+    PLAYER1_NAME = PLAYER1_NAME_H1.textContent;
+    console.log(PLAYER1_NAME);
+});
+
+PLAYER2_NAME_H1.addEventListener('blur', () => {
+    PLAYER2_NAME = PLAYER1_NAME_H2.textContent;
+    console.log(PLAYER2_NAME);
+});
+
 let clearScoresBtn = document.querySelector('#clear-score-btn');
 clearScoresBtn.addEventListener('click', () => {
     let playerScoreTexts = document.querySelectorAll('.player-score');
